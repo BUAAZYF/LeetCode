@@ -1,0 +1,101 @@
+Description:
+Given a string, find the length of the longest substring without repeating characters.
+Examples:
+Given "abcabcbb", the answer is "abc", which the length is 3.
+Given "bbbbb", the answer is "b", with the length of 1.
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+
+(1)	time:O(n^2) space:O(1)
+/*
+Create a 256 (ANSCII code table size) bool array, 
+which is used to store whether characters are 
+repeated each time and to clean up the current array 
+at the beginning of each time.
+*/
+
+public int lengthOfLongestSubstring(String s) {
+    boolean[] contain= new boolean[256];
+    int maxSub=1;
+    char[] str=s.toCharArray();
+    
+    if(s.isEmpty())
+        return 0;
+    for(int i=0;i<str.length;++i)
+    {
+        boolClean(contain);
+        int length=1;
+        contain[str[i]]=true;
+        for(int j=i+1;j<str.length;++j)
+        {
+            if(contain[str[j]]==true)
+            {
+                if(length>maxSub)
+                    maxSub=length;
+                break;
+            }
+            contain[str[j]]=true;
+            length++;
+            if(length>maxSub)
+                maxSub=length;
+        }
+    }
+		
+    return maxSub;
+}
+    
+void boolClean(boolean b[])
+{
+    for(int i=0;i<b.length;i++)
+        b[i]=false;
+}
+
+
+(2)	 time:O(n) space:O(1)
+//similar as (1); do not clean bool array each time.
+
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if(s.length()<=1)
+			return s.length();
+		
+        boolean[] contain= new boolean[256];
+		int maxSub=1;
+		char[] str=s.toCharArray();
+		
+		for(int i=0;i<contain.length;++i)
+			contain[i]=false;
+		
+		int length=1;
+		for(int i=0,j=i+1;i<str.length&&j<str.length;++i)
+		{
+			if(i>0)
+			{
+				contain[str[i-1]] = false;
+				--length;
+			}
+			if(j==i)
+			{
+				j=i+1;
+				length=1;
+			}
+			
+			contain[str[i]]=true;
+			for(;j<str.length;++j)
+			{
+				if(contain[str[j]]==true)
+				{
+					if(length>maxSub)
+						maxSub=length;
+					break;
+				}
+				contain[str[j]]=true;
+				++length;
+				if(length>maxSub)
+					maxSub=length;
+			}
+		}
+		
+		return maxSub;
+    }
+}
