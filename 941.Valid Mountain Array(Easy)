@@ -1,3 +1,4 @@
+(1)
 '''
 If it's a moutain array, the array is increasing and later dcreasing.
 We keep a flag var 'direction' to mark the increasing with 1 and -1 otherwise.

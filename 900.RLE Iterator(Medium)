@@ -1,0 +1,30 @@
+(1)
+'''
+remeber current num index and cal repeated times.
+'''
+
+class RLEIterator:
+
+    def __init__(self, A):
+        """
+        :type A: List[int]
+        """
+        self.A = A
+        self.idx = 0
+
+    def next(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        while n > 0 and self.idx < len(self.A):
+            if self.A[self.idx] == 0:
+                self.idx += 2
+                continue
+            minus = min(n, self.A[self.idx])
+            n -= minus
+            self.A[self.idx] -= minus
+            if n == 0:
+                break
+            self.idx += 2
+        return self.A[self.idx + 1] if self.idx + 1 < len(self.A) else -1

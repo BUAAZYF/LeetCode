@@ -1,0 +1,136 @@
+Description:
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+You may assume that each input would have exactly one solution.
+Example:
+Given nums = [2, 7, 11, 15], target = 9,
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+
+
+(1)	time:O(n^2) space:O(1)
+//brute force. 
+
+public int[] twoSum(int[] nums, int target) {
+    int i=0,j=0;
+    outloop:for(i=0;i<nums.length;++i)
+    {
+        for(j=i+1;j<nums.length;++j){
+            if(nums[i]+nums[j]==target){
+                break outloop;
+            }
+        }
+    }
+    return new int[]{i,j};
+}
+
+
+(2)	time:O(nlogn) space:O(n)
+//save num and index in container and sort; find the answer with two points.
+
+class element{
+	public:
+		int num;
+		int pos;
+		element(int _num, int _pos) :num(_num), pos(_pos)
+		{}
+		element() :num(0), pos(0)
+		{}
+    };
+    
+vector<int> twoSum(vector<int>& nums, int target) {
+    vector<element> container;
+    for (size_t i = 0; i < nums.size(); ++i)
+    {
+        container.push_back(element(nums[i], i));
+    }
+
+    sort(container.begin(), container.end(),
+        ([](const element& o1, const element& o2)->bool
+            {return o1.num<o2.num; })
+        );
+
+    auto lp = container.begin();
+    auto rp = container.end();
+    --rp;
+
+    for (; lp <= rp;)
+    {
+        if (lp->num + rp->num > target) --rp;
+        else if (lp->num + rp->num < target) ++lp;
+        else break;
+    }
+
+    return vector<int>{lp->pos, rp->pos};
+}
+
+
+(3)	time:O(nlogn) space:o(n)
+//Similar as (2) without addition class
+
+static int indexof(int[] nums, int target)
+{
+    for (int i=0;i<nums.length;++i) {
+        if(nums[i]==target)
+            return i;
+    }
+    return -1;
+}
+	
+public int[] twoSum(int[] nums, int target) 
+{
+    int[] sorted = Arrays.copyOf(nums, nums.length);
+    Arrays.sort(sorted);
+    int lp = 0,rp = sorted.length-1;
+    for(;lp<rp;)
+    {
+        if(sorted[lp]+sorted[rp]<target) ++lp;
+        else if(sorted[lp]+sorted[rp]>target) --rp;
+        else break;
+    }
+    
+    int first = indexof(nums, sorted[lp]);
+    nums[first] = Integer.MAX_VALUE;
+    int second = indexof(nums,sorted[rp]);
+    return new int[]{first,second};
+}
+
+
+(4)	time:O(n) space:O(n)
+//two pass hashmap：first to put element and second to cal res.
+
+public int[] twoSum(int[] nums, int target) 
+{
+    HashMap<Integer, Integer> hMap =new HashMap<>();
+    if(nums.length<3)
+        return nums;
+    
+    for(int i=0;i<nums.length;++i)
+    {
+        hMap.put(nums[i], i);
+    }
+    
+    for(int i=0;i<nums.length;++i)
+    {
+        if(hMap.containsKey(target-nums[i])&&i!=hMap.get(target-nums[i]))
+            return new int[]{i,hMap.get(target-nums[i])};
+    }
+    
+    throw new IllegalArgumentException("No two sum solution");
+}
+
+
+(5)	time:O(n) space:O(n)
+//one pass hashmap
+
+public int[] twoSum(int[] nums, int target) 
+{
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement)) {
+            return new int[] { map.get(complement), i };
+        }
+        map.put(nums[i], i);
+    }
+throw new IllegalArgumentException("No two sum solution");
+}

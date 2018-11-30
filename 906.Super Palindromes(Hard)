@@ -1,0 +1,66 @@
+(1)
+'''
+As we need super palindromes, the root is palindromes. If the root has 
+two more digits, any single digit in the root is must less than 3(or 
+there will be a carry that conflicts super palindromes).
+So my idea is to construct such root and check root^2 is super palindromes or not.
+'''
+
+import math
+class Solution:
+    def superpalindromesInRange(self, L, R):
+        """
+        :type L: str
+        :type R: str
+        :rtype: int
+        """
+        half_gen = []
+        def gen_num(s, n):
+            if n == 0:
+                return half_gen.append(s)
+            digits = ['1', '2']
+            if s != '': digits.append('0')
+            for k in digits:
+                gen_num(s + k, n - 1)
+
+        def is_palindromes(n):
+            s = str(n)
+            i, j = 0, len(s) - 1
+            while i < j:
+                if s[i] != s[j]:
+                    return False
+                i += 1
+                j -= 1
+            return True
+
+        def find_n_superpalind(n, lr, rr):
+            cnt = 0
+            half = (n + 1) // 2
+            half_gen.clear()
+            gen_num('', half)
+            for num in half_gen:
+                if n & 1 == 1:
+                    cur = num + num[::-1][1:]
+                else:
+                    cur = num + num[::-1]
+                cur = int(cur)
+                if lr <= cur and rr >= cur and is_palindromes(cur ** 2):
+                    cnt += 1
+            
+            return cnt
+                        
+
+        cnt = 0
+        lr = int(math.sqrt(int(L)))
+        lr = lr if lr ** 2 >= int(L) else lr + 1
+        rr = int(math.sqrt(int(R)))
+        n1, n2 = len(str(lr)), len(str(rr))
+        while n1 <= n2:
+            if n1 == 1:
+                for i in [0, 1, 2, 3]:
+                    if lr <= i and rr >= i:
+                        cnt += 1
+            else:
+                cnt += find_n_superpalind(n1, lr, rr)
+            n1 += 1
+        return cnt

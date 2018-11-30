@@ -1,0 +1,96 @@
+(1)
+'''
+We manage lasti and lastj to skip some cases that we don't need to concern.
+'''
+
+class Solution:
+    def totalFruit(self, tree):
+        """
+        :type tree: List[int]
+        :rtype: int
+        """
+        res = 1
+        n = len(tree)
+        i = 0
+        while i < n:
+            basket = set()
+            basket.add(tree[i])
+            lasti = i + 1
+            lastj = i + 1
+            for j in range(i + 1, n):
+                if len(basket) == 1:
+                    basket.add(tree[j])
+                if tree[j] not in basket and len(basket) == 2:
+                    break
+                if tree[j] != tree[i]:
+                    lastj = j
+                else:
+                    lasti = j
+                res = max(res, j - i + 1)
+            if len(basket) == 2:
+                k = lastj
+                while k >= 0 and tree[k] == tree[lastj]:
+                    k-= 1
+                lastj = k + 1
+            else:
+                break
+            i = lasti if lasti == i + 1 else lastj
+                    
+        return res
+
+
+
+(2)
+'''
+naive solution. Time Limit Exceeded.
+Iterate and count.
+'''
+
+class Solution:
+    def totalFruit(self, tree):
+        """
+        :type tree: List[int]
+        :rtype: int
+        """
+        res = 1
+        n = len(tree)
+        for i in range(0, n):
+            basket = set()
+            basket.add(tree[i])
+            for j in range(i + 1, n):
+                if tree[j] not in basket and len(basket) == 2:
+                    break
+                res = max(res, j - i + 1)
+                basket.add(tree[j])
+                    
+        return res
+
+
+(3)
+'''
+skip some start points. Time Limit Exceeded.
+manage lasti to skip some cases.
+'''
+class Solution:
+    def totalFruit(self, tree):
+        """
+        :type tree: List[int]
+        :rtype: int
+        """
+        res = 1
+        n = len(tree)
+        i = 0
+        while i < n:
+            basket = set()
+            basket.add(tree[i])
+            lasti = i + 1
+            for j in range(i + 1, n):
+                if len(basket) == 1:
+                    basket.add(tree[j])
+                    lasti = j
+                if tree[j] not in basket and len(basket) == 2:
+                    break
+                res = max(res, j - i + 1)
+            i = lasti
+                    
+        return res
